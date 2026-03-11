@@ -5,6 +5,7 @@ import MenuItemCard from "@/components/MenuItemCard";
 import OrderSummary from "@/components/OrderSummary";
 import { toast } from "sonner";
 
+const ORDERS_KEY = "grnd.orders";
 const OrderPage = () => {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [discount, setDiscount] = useState(0);
@@ -52,14 +53,35 @@ const OrderPage = () => {
     toast.info("Order cleared.");
   }, []);
 
-  const handleCompleteOrder = useCallback(() => {
-    if (orderItems.length === 0) return;
-    const subtotal = orderItems.reduce((s, i) => s + i.menuItem.price * i.quantity, 0);
-    const total = subtotal - subtotal * discount;
-    toast.success(`Order completed! Total: ₱${total.toFixed(2)} (${paymentMethod.toUpperCase()})`);
-    setOrderItems([]);
-    setDiscount(0);
-  }, [orderItems, discount, paymentMethod]);
+  
+const handleCompleteOrder = useCallback(() => {
+  if (orderItems.length === 0) return;
+
+  const subtotal = orderItems.reduce((s, i) => s + i.menuItem.price * i.quantity, 0);
+  const total = subtotal - subtotal * discount;
+
+  const savedOrder = {
+    id: `ORD-${Date.now()}`,
+    createdAt: new Date().toISOString(),
+    paymentMethod,
+    discount,
+    items: orderItems,
+  };
+
+  try {
+    const raw = localStorage.getItem(ORDERS_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    list.push(savedOrder);
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(list));
+  } catch {
+    // ignore—if storage fails we still complete the flow
+  }
+
+  toast.success(`Order completed! Total: ₱${total.toFixed(2)} (${paymentMethod.toUpperCase()})`);
+  setOrderItems([]);
+  setDiscount(0);
+}, [orderItems, discount, paymentMethod]);
+
 
   return (
     <div className="flex flex-1 gap-4 p-4 overflow-hidden">
