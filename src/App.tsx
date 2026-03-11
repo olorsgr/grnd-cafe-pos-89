@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import POSHeader from "./components/POSHeader";
 import Index from "./pages/Index";
 import OrderListPage from "./pages/OrderListPage";
+import OrderHistory from "./pages/OrderHistory";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/orders" element={<OrderListPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/orders" element={<OrderHistory />} />
           </Routes>
         </div>
       </BrowserRouter>
