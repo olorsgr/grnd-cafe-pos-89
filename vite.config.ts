@@ -1,22 +1,18 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   server: {
     host: "::",
     port: 8080,
     hmr: { overlay: false },
   },
-  plugins: [
-    react(),
-    mode === "development" ? componentTagger() : null // only in dev
-  ].filter(Boolean),
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: "/grnd-pos/" // add this if deploying to GitHub Pages
-}));
+  base: "/grnd-cafe-pos-89/",
+});
